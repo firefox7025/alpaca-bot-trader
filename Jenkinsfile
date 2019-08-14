@@ -4,8 +4,8 @@ pipeline {
     }
     stages {
         stage('Build') {
-            steps {
-                sh cargo build --release
+            step {
+                cargo build --release
             }
         }
         stage('Test') {
