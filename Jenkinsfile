@@ -4,9 +4,11 @@ pipeline {
     }
     stages {
         stage('Build') {
+            steps {
             step {
                 cargo build --release
-            }
+                }
+           }
         }
         stage('Test') {
             steps {
