@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                cargo build --release
+                sh cargo build --release
             }
         }
         stage('Test') {
