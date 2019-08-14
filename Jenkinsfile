@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh "cargo build"
+                sh "cargo build --release"
             }
         }
         stage('Test') {
@@ -23,17 +23,6 @@ pipeline {
                 // The build will fail if rustfmt thinks any changes are
                 // required.
                 sh "cargo +nightly fmt --all -- --write-mode diff"
-            }
-        }
-        stage('Doc') {
-            steps {
-                sh "cargo doc"
-                // We run a python `SimpleHTTPServer` against
-                // /var/lib/jenkins/jobs/<repo>/branches/master/javadoc to
-                // display our docs
-                step([$class: 'JavadocArchiver',
-                      javadocDir: 'target/doc',
-                      keepAll: false])
             }
         }
     }
