@@ -5,19 +5,35 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-            step {
-                cargo build --release
-                }
-           }
+                sh "cargo build"
+            }
         }
         stage('Test') {
             steps {
-                cargo test
+                sh "cargo test"
             }
         }
-        stage('Deploy') {
+        stage('Clippy') {
             steps {
-                echo 'Deploying....'
+                sh "cargo +nightly clippy --all"
+            }
+        }
+        stage('Rustfmt') {
+            steps {
+                // The build will fail if rustfmt thinks any changes are
+                // required.
+                sh "cargo +nightly fmt --all -- --write-mode diff"
+            }
+        }
+        stage('Doc') {
+            steps {
+                sh "cargo doc"
+                // We run a python `SimpleHTTPServer` against
+                // /var/lib/jenkins/jobs/<repo>/branches/master/javadoc to
+                // display our docs
+                step([$class: 'JavadocArchiver',
+                      javadocDir: 'target/doc',
+                      keepAll: false])
             }
         }
     }
